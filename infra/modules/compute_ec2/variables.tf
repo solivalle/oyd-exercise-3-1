@@ -11,7 +11,7 @@ variable "name" {
 variable "ami_id" {
   description = "AMI ID for the EC2 instance — region-specific, must match architecture"
   type        = string
-  # us-east-1, Amazon Linux 2023, arm64: ami-023a34a1153befb51
+  # us-west-2, Amazon Linux 2023, arm64: ami-023a34a1153befb51
 }
 
 variable "instance_type" {
@@ -28,4 +28,8 @@ variable "app_s3_bucket" {
 variable "allowed_cidr_blocks" {
   description = "CIDR blocks permitted to reach port 8080 on the instance"
   type        = list(string)
+}
+
+variable "vpc_id" {
+  type = string
 }
