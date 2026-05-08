@@ -36,6 +36,7 @@ resource "aws_iam_instance_profile" "this" {
 resource "aws_security_group" "instance" {
   name        = "${var.name}-${var.environment}-sg"
   description = "Security group for EC2 instances"
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port   = 8080
@@ -52,11 +53,6 @@ resource "aws_security_group" "instance" {
   }
 }
 
-resource "aws_key_pair" "ec2_key" {
-  key_name   = "${var.name}-${var.environment}-ec2-key"
-  public_key = file("${path.module}/key.pub")
-}
-
 resource "aws_instance" "this" {
   ami                    = var.ami_id
   instance_type          = var.instance_type
@@ -66,7 +62,7 @@ resource "aws_instance" "this" {
   user_data = base64encode(<<-EOF
     #!/bin/bash
     dnf install -y ruby
-    aws s3 cp s3://$BUCKET/server.rb /opt/server.rb
+    aws s3 cp s3://${var.app_s3_bucket}/server.rb /opt/server.rb
     COMPUTE_TYPE=ec2 nohup ruby /opt/server.rb &    
   EOF
   )
